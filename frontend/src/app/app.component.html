@@ -2,8 +2,13 @@
 
 <div class="app-shell">
   <app-top-bar></app-top-bar>
-  <app-header></app-header>
+  <app-header (openMobileMenu)="isMobileMenuOpen.set(true)"></app-header>
   <app-navbar></app-navbar>
+
+  <app-mobile-menu
+    [isOpen]="isMobileMenuOpen()"
+    (closeMenu)="isMobileMenuOpen.set(false)">
+  </app-mobile-menu>
 
   <div class="app-main-view">
     <router-outlet></router-outlet>

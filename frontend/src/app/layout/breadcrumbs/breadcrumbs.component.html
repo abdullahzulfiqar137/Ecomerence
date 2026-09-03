@@ -1,0 +1,25 @@
+<nav *ngIf="items.length > 0" aria-label="Breadcrumb Navigation" class="breadcrumbs-nav">
+  <div class="container">
+    <ol class="breadcrumbs-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/" class="breadcrumb-link home-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="sr-only">Home</span>
+        </a>
+      </li>
+
+      <li *ngFor="let item of items; let last = last" class="breadcrumb-item">
+        <span class="separator">/</span>
+        <a *ngIf="!last && item.url" [routerLink]="item.url" class="breadcrumb-link">
+          {{ item.label }}
+        </a>
+        <span *ngIf="last || !item.url" class="current-page" aria-current="page">
+          {{ item.label }}
+        </span>
+      </li>
+    </ol>
+  </div>
+</nav>

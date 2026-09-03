@@ -1,0 +1,145 @@
+<main class="auth-page" aria-label="Customer Account Registration">
+  <div class="auth-card shadow-xl">
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="auth-brand">
+        <span class="auth-logo-mark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
+            <path d="M2 7h20"></path>
+          </svg>
+        </span>
+      </div>
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-subtitle">Join our global shopping collective for personalized recommendations and express shipping privileges.</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage()" class="auth-error-alert" role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ errorMessage() }}</span>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form" novalidate>
+      <!-- Name Row (Two Columns) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reg-first-name" class="form-label">First Name</label>
+          <input
+            id="reg-first-name"
+            type="text"
+            formControlName="firstName"
+            class="form-input"
+            placeholder="Alex">
+          <p *ngIf="registerForm.controls.firstName.touched && registerForm.controls.firstName.invalid" class="error-hint">
+            First name is required.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-last-name" class="form-label">Last Name</label>
+          <input
+            id="reg-last-name"
+            type="text"
+            formControlName="lastName"
+            class="form-input"
+            placeholder="Mercer">
+          <p *ngIf="registerForm.controls.lastName.touched && registerForm.controls.lastName.invalid" class="error-hint">
+            Last name is required.
+          </p>
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="reg-email" class="form-label">Email Address</label>
+        <input
+          id="reg-email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="alex@example.com">
+        <p *ngIf="registerForm.controls.email.touched && registerForm.controls.email.invalid" class="error-hint">
+          Please enter a valid email address.
+        </p>
+      </div>
+
+      <!-- Phone Field -->
+      <div class="form-group">
+        <label for="reg-phone" class="form-label">Phone Number (Optional)</label>
+        <input
+          id="reg-phone"
+          type="tel"
+          formControlName="phoneNumber"
+          class="form-input"
+          placeholder="+1 (555) 000-0000">
+      </div>
+
+      <!-- Password Fields (Row) -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reg-password" class="form-label">Password</label>
+          <input
+            id="reg-password"
+            type="password"
+            formControlName="password"
+            class="form-input"
+            placeholder="••••••••">
+          <p *ngIf="registerForm.controls.password.touched && registerForm.controls.password.invalid" class="error-hint">
+            Min. 6 characters.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-confirm" class="form-label">Confirm</label>
+          <input
+            id="reg-confirm"
+            type="password"
+            formControlName="confirmPassword"
+            class="form-input"
+            placeholder="••••••••">
+        </div>
+      </div>
+
+      <!-- Password Mismatch Hint -->
+      <p *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.controls.confirmPassword.touched" class="error-hint">
+        Passwords do not match.
+      </p>
+
+      <!-- Terms & Conditions Checkbox -->
+      <div class="checkbox-row">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="acceptedTerms" class="form-checkbox">
+          <span>I agree to the <a routerLink="/terms" class="auth-link">Terms of Service</a> and <a routerLink="/privacy" class="auth-link">Privacy Policy</a></span>
+        </label>
+      </div>
+      <p *ngIf="registerForm.controls.acceptedTerms.touched && registerForm.controls.acceptedTerms.invalid" class="error-hint">
+        You must accept the terms to continue.
+      </p>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-submit"
+        [disabled]="isLoading()">
+        <span *ngIf="!isLoading()">Complete Registration</span>
+        <span *ngIf="isLoading()" class="loading-state">
+          <span class="spinner-sm"></span>
+          Creating Account...
+        </span>
+      </button>
+    </form>
+
+    <!-- Footer Switch -->
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login" class="auth-link">Sign In</a></p>
+    </div>
+  </div>
+</main>

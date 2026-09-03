@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,11 +11,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  @Output() openMobileMenu = new EventEmitter<void>();
+
   searchQuery = signal('');
   cartCount = signal(0);
   wishlistCount = signal(0);
   isUserMenuOpen = signal(false);
-  isMobileMenuOpen = signal(false);
 
   constructor(private readonly router: Router) {}
 
@@ -31,6 +32,6 @@ export class HeaderComponent {
   }
 
   toggleMobileMenu(): void {
-    this.isMobileMenuOpen.update(v => !v);
+    this.openMobileMenu.emit();
   }
 }

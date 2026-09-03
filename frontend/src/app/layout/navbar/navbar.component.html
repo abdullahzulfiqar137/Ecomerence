@@ -2,7 +2,12 @@
   <div class="container navbar-container">
     <!-- Browse Categories Trigger -->
     <div class="category-trigger-wrapper">
-      <a routerLink="/categories" class="categories-btn">
+      <button
+        type="button"
+        class="categories-btn"
+        (click)="toggleCategoriesDropdown()"
+        [attr.aria-expanded]="isCategoriesDropdownOpen()"
+        aria-haspopup="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect width="7" height="7" x="3" y="3" rx="1"></rect>
           <rect width="7" height="7" x="14" y="3" rx="1"></rect>
@@ -10,10 +15,36 @@
           <rect width="7" height="7" x="3" y="14" rx="1"></rect>
         </svg>
         <span>All Categories</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="chevron-icon" [class.rotate]="isCategoriesDropdownOpen()" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m6 9 6 6 6-6"/>
         </svg>
-      </a>
+      </button>
+
+      <!-- Category Dropdown Menu -->
+      <div *ngIf="isCategoriesDropdownOpen()" class="category-dropdown-panel shadow-xl">
+        <div class="dropdown-header">
+          <span class="dropdown-title">Explore Store Departments</span>
+        </div>
+        <ul class="category-list">
+          <li *ngFor="let cat of categories()">
+            <a
+              [routerLink]="['/products']"
+              [queryParams]="{ categoryId: cat.id }"
+              (click)="closeDropdown()"
+              class="category-item">
+              <span class="category-name">{{ cat.name }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+        <div class="dropdown-footer">
+          <a routerLink="/categories" (click)="closeDropdown()" class="view-all-cats-link">
+            View All Categories &rarr;
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- Main Nav Links -->
