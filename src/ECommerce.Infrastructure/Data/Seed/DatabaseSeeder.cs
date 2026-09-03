@@ -10,7 +10,7 @@ namespace ECommerce.Infrastructure.Data.Seed;
 
 public static class DatabaseSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context, ILogger logger)
+    public static async Task SeedAsync(ApplicationDbContext context, ILogger logger, bool seedCatalogData = true)
     {
         try
         {
@@ -18,8 +18,17 @@ public static class DatabaseSeeder
             await SeedUsersAsync(context);
             await SeedCurrenciesAndCountriesAsync(context);
 
+            if (seedCatalogData)
+            {
+                await SeedCategoriesAndBrandsAsync(context);
+                await SeedProductsAndVariantsAsync(context);
+                await SeedWarehousesAndInventoryAsync(context);
+                await SeedShippingAsync(context);
+                await SeedCouponsAndTaxRulesAsync(context);
+            }
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Database ready for manual data entry.");
+            logger.LogInformation("Database seeded successfully (CatalogData: {CatalogData}).", seedCatalogData);
         }
         catch (Exception ex)
         {

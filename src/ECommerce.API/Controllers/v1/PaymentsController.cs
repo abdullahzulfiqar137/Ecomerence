@@ -1,15 +1,18 @@
 using Asp.Versioning;
+using ECommerce.API.Middlewares;
 using ECommerce.Application.DTOs.Payments;
 using ECommerce.Application.Interfaces.Services;
 using ECommerce.Application.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerce.API.Controllers.v1;
 
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/payments")]
+[EnableRateLimiting("CheckoutPolicy")]
 public class PaymentsController : BaseApiController
 {
     private readonly IPaymentService _paymentService;
@@ -51,6 +54,7 @@ public class PaymentsController : BaseApiController
     }
 
     [HttpPost("intent")]
+    [RequireIdempotency(Required = false)]
     [ProducesResponseType(typeof(ApiResponse<PaymentIntentResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<PaymentIntentResponseDto>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateIntent([FromBody] CreatePaymentIntentRequestDto request, CancellationToken cancellationToken)
@@ -73,6 +77,7 @@ public class PaymentsController : BaseApiController
 
     [Authorize(Roles = "SuperAdmin,Admin,FinanceManager")]
     [HttpPost("refund")]
+    [RequireIdempotency(Required = false)]
     [ProducesResponseType(typeof(ApiResponse<RefundResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<RefundResponseDto>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProcessRefund([FromBody] RefundRequestDto request, CancellationToken cancellationToken)

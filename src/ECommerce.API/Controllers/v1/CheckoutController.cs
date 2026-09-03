@@ -1,14 +1,17 @@
 using Asp.Versioning;
+using ECommerce.API.Middlewares;
 using ECommerce.Application.DTOs.Checkout;
 using ECommerce.Application.Interfaces.Services;
 using ECommerce.Application.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerce.API.Controllers.v1;
 
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/checkout")]
+[EnableRateLimiting("CheckoutPolicy")]
 public class CheckoutController : BaseApiController
 {
     private readonly ICheckoutService _checkoutService;
@@ -47,6 +50,7 @@ public class CheckoutController : BaseApiController
     }
 
     [HttpPost("process")]
+    [RequireIdempotency(Required = false)]
     [ProducesResponseType(typeof(ApiResponse<CheckoutResultDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<CheckoutResultDto>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ProcessCheckout([FromBody] CheckoutRequestDto request, CancellationToken cancellationToken)

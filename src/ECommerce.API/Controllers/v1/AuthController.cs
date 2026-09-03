@@ -5,11 +5,13 @@ using ECommerce.Application.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerce.API.Controllers.v1;
 
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/auth")]
+[EnableRateLimiting("AuthPolicy")]
 public class AuthController : BaseApiController
 {
     private readonly IAuthService _authService;

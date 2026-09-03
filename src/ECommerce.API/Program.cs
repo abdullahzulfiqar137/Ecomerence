@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using Asp.Versioning;
 using ECommerce.API.Middlewares;
 using ECommerce.Application;
@@ -6,6 +7,7 @@ using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Data.Seed;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi;
@@ -91,6 +93,56 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Configure Enterprise Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            JsonSerializer.Serialize(new
+            {
+                success = false,
+                message = "Too many requests. Please slow down and try again later."
+            }), token);
+    };
+
+    // Strict Auth Policy: 10 requests / minute per client IP
+    options.AddPolicy("AuthPolicy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    // Checkout & Payment Policy: 20 requests / minute per client IP
+    options.AddPolicy("CheckoutPolicy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    // Global Browsing Policy: 120 requests / minute per client IP
+    options.AddPolicy("GlobalPolicy", httpContext =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 120,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 4,
+                QueueLimit = 2
+            }));
+});
+
 var app = builder.Build();
 
 // Auto-seed database during development startup
@@ -127,6 +179,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseCors("AllowAll");
+app.UseStaticFiles();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

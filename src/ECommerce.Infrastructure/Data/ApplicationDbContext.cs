@@ -21,6 +21,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<IdempotentRequest> IdempotentRequests => Set<IdempotentRequest>();
 
     // Product Catalog
     public DbSet<Category> Categories => Set<Category>();

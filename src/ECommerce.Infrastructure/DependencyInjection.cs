@@ -11,6 +11,7 @@ using ECommerce.Infrastructure.Services.Cart;
 using ECommerce.Infrastructure.Services.Catalog;
 using ECommerce.Infrastructure.Services.Checkout;
 using ECommerce.Infrastructure.Services.Coupons;
+using ECommerce.Infrastructure.Services.Idempotency;
 using ECommerce.Infrastructure.Services.International;
 using ECommerce.Infrastructure.Services.Inventory;
 using ECommerce.Infrastructure.Services.Jobs;
@@ -20,6 +21,7 @@ using ECommerce.Infrastructure.Services.Payments;
 using ECommerce.Infrastructure.Services.Reviews;
 using ECommerce.Infrastructure.Services.Search;
 using ECommerce.Infrastructure.Services.Shipping;
+using ECommerce.Infrastructure.Services.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -117,8 +119,15 @@ public static class DependencyInjection
         services.AddDistributedMemoryCache();
         services.AddSingleton<ICacheService, CacheService>();
 
-        // Background Jobs Engine
+        // Safe Request Idempotency Engine
+        services.AddScoped<IIdempotencyService, IdempotencyService>();
+
+        // File & Media Storage Engine
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+        // Background Jobs Engine & Automated Workers
         services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+        services.AddHostedService<AutomatedMaintenanceBackgroundWorker>();
 
         // JWT Authentication Configuration
         var jwtSecret = configuration["JwtSettings:Secret"] ?? "SuperSecretKeyForGlobalECommercePlatform2026MustBeAtLeast32BytesLong!";
