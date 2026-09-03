@@ -1,0 +1,64 @@
+<aside class="topbar" aria-label="Store Announcement and Regional Preferences">
+  <div class="container topbar-content">
+    <!-- Announcement / Global Notice -->
+    <div class="topbar-left">
+      <span class="pulse-indicator"></span>
+      <p class="announcement-text">
+        <strong>Free Express Worldwide Shipping</strong> on all qualifying orders over $150
+      </p>
+    </div>
+
+    <!-- Right Controls: Tracking, Help, Currency -->
+    <div class="topbar-right">
+      <a routerLink="/orders/tracking" class="topbar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="16" height="13" x="1" y="5" rx="2"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+        <span>Track Order</span>
+      </a>
+
+      <span class="divider"></span>
+
+      <a routerLink="/faq" class="topbar-link">
+        <span>Help & FAQ</span>
+      </a>
+
+      <span class="divider"></span>
+
+      <!-- Currency Switcher Dropdown -->
+      <div class="currency-selector">
+        <button
+          type="button"
+          class="currency-btn"
+          (click)="toggleCurrencyDropdown()"
+          [attr.aria-expanded]="isCurrencyDropdownOpen()"
+          aria-haspopup="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span>{{ selectedCurrency() }}</span>
+          <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+
+        <ul *ngIf="isCurrencyDropdownOpen()" class="currency-dropdown shadow-lg">
+          <li *ngFor="let curr of currencies">
+            <button
+              type="button"
+              class="dropdown-item"
+              [class.active]="curr === selectedCurrency()"
+              (click)="selectCurrency(curr)">
+              {{ curr }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</aside>

@@ -10,6 +10,15 @@
 .idea/
 .vscode/
 
+## Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 ## Secrets & Config
 secrets.json
 *.local.json

@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 title Running Global E-Commerce Backend API
 echo ============================================================
 echo Starting Global E-Commerce Backend API (.NET 10)

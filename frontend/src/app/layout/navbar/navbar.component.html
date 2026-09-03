@@ -1,0 +1,41 @@
+<nav class="navbar" aria-label="Main Store Navigation">
+  <div class="container navbar-container">
+    <!-- Browse Categories Trigger -->
+    <div class="category-trigger-wrapper">
+      <a routerLink="/categories" class="categories-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+          <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+        </svg>
+        <span>All Categories</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Main Nav Links -->
+    <ul class="nav-links">
+      <li *ngFor="let link of navLinks">
+        <a
+          [routerLink]="link.path"
+          [queryParams]="link.query"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+          class="nav-item">
+          {{ link.label }}
+        </a>
+      </li>
+    </ul>
+
+    <!-- Right: Hot Offers Tag -->
+    <div class="navbar-right">
+      <a routerLink="/products" [queryParams]="{ isFeatured: 'true' }" class="hot-offer-tag">
+        <span class="fire-icon">🔥</span>
+        <span>Flash Sale - Up to 50% Off</span>
+      </a>
+    </div>
+  </div>
+</nav>
