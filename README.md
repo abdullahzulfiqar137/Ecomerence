@@ -102,6 +102,10 @@ A Postman collection is included:
 - [E-Commerce Postman collection](backend/ECommerce_Postman_Collection.json)
 - [Backend architecture guide](backend/BACKEND_ARCHITECTURE_GUIDE.md)
 
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting and payment/deployment safety notes.
+
 ## Database safety
 
 Review `backend/CleanDb.sql` carefully before running it: database cleanup scripts can permanently delete data. Use a disposable development database and take a backup before any destructive database operation.
