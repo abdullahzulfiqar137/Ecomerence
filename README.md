@@ -1,15 +1,38 @@
 # Global E-Commerce Platform
 
-A full-stack e-commerce application with an ASP.NET Core **.NET 10** backend organized around Clean Architecture.
+<p align="center">
+  <strong>Full-stack e-commerce solution with an ASP.NET Core Clean Architecture backend</strong>
+</p>
 
-## Architecture
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white" alt=".NET 10" />
+  <img src="https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white" alt="Angular 22" />
+  <img src="https://img.shields.io/badge/SQL_Server-Database-CC2927?logo=microsoftsqlserver&logoColor=white" alt="SQL Server" />
+  <img src="https://img.shields.io/badge/Architecture-Clean_Architecture-0A7EA4" alt="Clean Architecture" />
+</p>
 
-The backend is organized into the following layers:
+## Overview
 
-- **Domain** — core entities, enums, and value objects
-- **Application** — use cases, DTOs, interfaces, validators, and application models
-- **Infrastructure** — Entity Framework Core, persistence, integrations, and background services
-- **API** — REST endpoints, middleware, and application startup
+A full-stack e-commerce application with an ASP.NET Core .NET 10 backend organized around Clean Architecture. The repository includes separate backend and frontend workspaces, backend unit and integration test projects, and a Postman collection.
+
+## Backend architecture
+
+The backend is separated into four layers:
+
+| Layer | Responsibility |
+| --- | --- |
+| **Domain** | Core entities, enums, and value objects |
+| **Application** | Use cases, DTOs, interfaces, validators, and application models |
+| **Infrastructure** | Entity Framework Core, persistence, integrations, and background services |
+| **API** | REST endpoints, middleware, and application startup |
+
+```mermaid
+flowchart TD
+    API[API Layer] --> APP[Application Layer]
+    APP --> DOMAIN[Domain Layer]
+    INFRA[Infrastructure Layer] --> APP
+    INFRA --> DB[(SQL Server)]
+```
 
 ## Repository structure
 
@@ -39,12 +62,13 @@ The backend is organized into the following layers:
 - Entity Framework Core
 - SQL Server
 - Unit and integration test projects
+- Angular and TypeScript frontend (see the frontend workspace manifest for exact package versions)
 
 ## Prerequisites
 
 - .NET 10 SDK
 - SQL Server
-- Node.js and npm for the frontend (if working on the frontend)
+- Node.js and npm for frontend development
 
 ## Quick start — backend
 
@@ -57,12 +81,26 @@ dotnet test
 dotnet run --project src/ECommerce.API
 ```
 
-The repository's current README documents Swagger at http://localhost:5196 and a health endpoint at http://localhost:5196/health. Confirm the actual URLs from the API launch output and configuration.
+The project README documents Swagger at [http://localhost:5196](http://localhost:5196) and a health endpoint at [http://localhost:5196/health](http://localhost:5196/health). Confirm the actual URLs from the API launch output and configuration.
 
-## Documentation
+## Frontend
 
+The Angular workspace is under `frontend/`.
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Use the workspace's configured scripts and environment settings when connecting the frontend to the API.
+
+## API testing
+
+A Postman collection is included:
+
+- [E-Commerce Postman collection](backend/ECommerce_Postman_Collection.json)
 - [Backend architecture guide](backend/BACKEND_ARCHITECTURE_GUIDE.md)
-- [Postman collection](backend/ECommerce_Postman_Collection.json)
 
 ## Database safety
 
@@ -72,9 +110,9 @@ Never commit production connection strings, passwords, API keys, access tokens, 
 
 ## Testing
 
-Run the backend test suites with:
+Run backend test suites:
 
-```powershell
+```bash
 cd backend
 dotnet test
 ```
