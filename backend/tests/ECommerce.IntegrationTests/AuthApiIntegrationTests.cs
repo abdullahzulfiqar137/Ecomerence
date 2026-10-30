@@ -3,13 +3,13 @@ using System.Net.Http.Json;
 using ECommerce.Application.DTOs.Auth;
 using ECommerce.Application.Models;
 using ECommerce.Infrastructure.Data;
-using ECommerce.Infrastructure.Data.Seed;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace ECommerce.IntegrationTests;
@@ -19,15 +19,31 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Development");
+        builder.ConfigureLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Information);
+        });
 
         builder.ConfigureServices(services =>
         {
-            // Replace the production SQL Server registration with an isolated,
-            // in-memory database so CI never depends on a developer's local SQL Server.
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
             services.RemoveAll<ApplicationDbContext>();
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase($"ECommerceIntegrationTests_{Guid.NewGuid():N}"));
+
+            // Remove the provider-specific SQL Server options registration as well.
+            var openGenericTypeName = "Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsConfiguration" + "`1";
+            var openGenericType = typeof(DbContextOptions<ApplicationDbContext>).Assembly.GetType(openGenericTypeName);
+            if (openGenericType is not null)
+            {
+                var contextOptionsType = openGenericType.MakeGenericType(typeof(ApplicationDbContext));
+                foreach (var descriptor in services.Where(item => item.ServiceType == contextOptionsType).ToArray())
+                {
+                    services.Remove(descriptor);
+                }
+            }
+
+            var databaseName = $"ECommerceIntegrationTests_{Guid.NewGuid():N}";
+            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName));
         });
     }
 }
@@ -46,8 +62,6 @@ public class AuthApiIntegrationTests : IClassFixture<CustomWebApplicationFactory
     {
         var email = $"integration_{Guid.NewGuid():N}@ecommerce.global";
         var password = "SecurePassword123!";
-
-        // 1. Register
         var registerDto = new RegisterRequestDto
         {
             Email = email,
@@ -67,13 +81,7 @@ public class AuthApiIntegrationTests : IClassFixture<CustomWebApplicationFactory
         regResult.Data!.AccessToken.Should().NotBeNullOrEmpty();
         regResult.Data.RefreshToken.Should().NotBeNullOrEmpty();
 
-        // 2. Login
-        var loginDto = new LoginRequestDto
-        {
-            Email = email,
-            Password = password
-        };
-
+        var loginDto = new LoginRequestDto { Email = email, Password = password };
         var loginResponse = await _client.PostAsJsonAsync("/api/v1/auth/login", loginDto);
         loginResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
