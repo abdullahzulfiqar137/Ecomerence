@@ -1,53 +1,86 @@
-# 🛒 Global E-Commerce Platform
+# Global E-Commerce Platform
 
-A production-ready, enterprise-grade, scalable E-Commerce platform built with **.NET 10** and **Clean Architecture**.
+A full-stack e-commerce application with an ASP.NET Core **.NET 10** backend organized around Clean Architecture.
 
----
+## Architecture
 
-## 📁 Repository Structure
+The backend is organized into the following layers:
 
-```
-├── backend/                             # Complete ASP.NET Core .NET 10 Backend API
-│   ├── src/                             # Clean Architecture source projects
-│   │   ├── ECommerce.Domain/            # Entities, Enums, Value Objects (Zero dependencies)
-│   │   ├── ECommerce.Application/       # DTOs, Interfaces, Validators, Models
-│   │   ├── ECommerce.Infrastructure/    # EF Core, Services, Storage, Background Workers
-│   │   └── ECommerce.API/               # REST Controllers (v1), Middlewares, Program.cs
-│   ├── tests/                           # Unit and Integration test suites (64/64 passing)
+- **Domain** — core entities, enums, and value objects
+- **Application** — use cases, DTOs, interfaces, validators, and application models
+- **Infrastructure** — Entity Framework Core, persistence, integrations, and background services
+- **API** — REST endpoints, middleware, and application startup
+
+## Repository structure
+
+```text
+.
+├── backend/
+│   ├── src/
+│   │   ├── ECommerce.Domain/
+│   │   ├── ECommerce.Application/
+│   │   ├── ECommerce.Infrastructure/
+│   │   └── ECommerce.API/
+│   ├── tests/
 │   │   ├── ECommerce.UnitTests/
 │   │   └── ECommerce.IntegrationTests/
-│   ├── CleanDb.sql                      # Database maintenance & wipe script
-│   ├── ECommerce_Postman_Collection.json # Complete API testing Postman collection
-│   ├── run-api.bat                      # 1-click launch script
-│   └── BACKEND_ARCHITECTURE_GUIDE.md    # Complete architecture & implementation guide
+│   ├── CleanDb.sql
+│   ├── ECommerce_Postman_Collection.json
+│   └── BACKEND_ARCHITECTURE_GUIDE.md
+├── frontend/
+└── run-backend.bat
 ```
 
----
+## Technology
 
-## 📚 Complete Architecture Guide
+- C# and .NET 10
+- ASP.NET Core Web API
+- Clean Architecture
+- Entity Framework Core
+- SQL Server
+- Unit and integration test projects
 
-For a comprehensive explanation of:
-* How every layer was designed and organized
-* The complete directory structure and file breakdown
-* Enterprise patterns (Idempotency, Rate Limiting, State Machine, Outbox)
-* How to reproduce this architecture step-by-step
+## Prerequisites
 
-👉 **Read the [Backend Architecture Guide](file:///d:/Ecomerence/backend/BACKEND_ARCHITECTURE_GUIDE.md)**
+- .NET 10 SDK
+- SQL Server
+- Node.js and npm for the frontend (if working on the frontend)
 
----
+## Quick start — backend
 
-## ⚡ Quick Start
+From the repository root:
 
 ```powershell
-# 1. Navigate to backend
 cd backend
-
-# 2. Run all unit tests
+dotnet restore
 dotnet test
-
-# 3. Launch the API
 dotnet run --project src/ECommerce.API
 ```
 
-* **Swagger UI**: `http://localhost:5196`
-* **Health Check**: `http://localhost:5196/health`
+The repository's current README documents Swagger at http://localhost:5196 and a health endpoint at http://localhost:5196/health. Confirm the actual URLs from the API launch output and configuration.
+
+## Documentation
+
+- [Backend architecture guide](backend/BACKEND_ARCHITECTURE_GUIDE.md)
+- [Postman collection](backend/ECommerce_Postman_Collection.json)
+
+## Database safety
+
+Review `backend/CleanDb.sql` carefully before running it: database cleanup scripts can permanently delete data. Use a disposable development database and take a backup before any destructive database operation.
+
+Never commit production connection strings, passwords, API keys, access tokens, or customer data.
+
+## Testing
+
+Run the backend test suites with:
+
+```powershell
+cd backend
+dotnet test
+```
+
+A previous version of this README reported 64 passing tests. Treat that as a historical report, not a current guarantee; run the command above to verify the current checkout.
+
+## License
+
+No license terms are stated here. Unless a license file is present and applicable, all rights remain with the copyright holder.
